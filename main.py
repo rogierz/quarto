@@ -5,6 +5,7 @@ import logging
 import argparse
 import random
 import quarto
+from players.rule_based import *
 
 
 class RandomPlayer(quarto.Player):
@@ -23,7 +24,7 @@ class RandomPlayer(quarto.Player):
 
 def main():
     game = quarto.Quarto()
-    game.set_players((RandomPlayer(game), RandomPlayer(game)))
+    game.set_players((NaivePlayer(game), RandomPlayer(game)))
     winner = game.run()
     logging.warning(f"main: Winner: player {winner}")
 

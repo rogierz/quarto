@@ -6,6 +6,7 @@ import numpy as np
 from functools import reduce
 from copy import deepcopy
 
+
 class RiskyPlayer(quarto.Player):
 
     def __init__(self, quarto: quarto.Quarto) -> None:
@@ -100,7 +101,7 @@ class RiskyPlayer(quarto.Player):
 
     def __check_line_position(self, positions, partial_board):
         if positions.shape[0] <= 3 and positions.shape[0]:
-            quarto = deepcopy(self.get_game())
+            quarto = self.get_game()
             piece = quarto.get_selected_piece()
             binary_representation = deepcopy(partial_board)
             binary_representation[positions[0]] = piece
@@ -109,6 +110,7 @@ class RiskyPlayer(quarto.Player):
             common_pieces_2 = reduce(lambda a, b: a & (not b), binary_representation, 15)
             return common_pieces_1 or common_pieces_2
         return False
+
     def __check_line_positions(self):
 
         board = self.__get_board()
@@ -162,8 +164,7 @@ class RiskyPlayer(quarto.Player):
         candidate_line_position = self.__check_line_positions()
 
         if len(candidate_line_position) > 0:
-                    return candidate_line_position[0][0], candidate_line_position[0][1]
+            return candidate_line_position[0][0], candidate_line_position[0][1]
 
         x, y = random.choice(self.available_position)
         return x, y
-

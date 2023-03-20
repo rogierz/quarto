@@ -25,7 +25,7 @@ class NaivePlayer(quarto.Player):
         if piece:
             quarto.select(piece)
         quarto.place(position[0], position[1])
-        return quarto.check_winner != -1
+        return quarto.check_winner() != -1
 
     def __update_pieces(self):
         board = self.__get_board()

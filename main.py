@@ -6,13 +6,13 @@ from utils import parser, logger
 
 def main():
     game = quarto.Quarto()
-    game.set_players((NaivePlayer(game), RandomPlayer(game)))
+    players = (NaivePlayer(game), RiskyPlayer(game))
+    game.set_players(players)
     winner = game.run()
-    logger.warning(f"main: Winner: player {winner}")
+    logger.warning(f"main: Winner: player {winner} [{players[winner]}]")
 
 
 if __name__ == '__main__':
     args = parser.parse_args()
     logger = logger.configureLogger(args)
     main()
-    logger.info("Logging an info")

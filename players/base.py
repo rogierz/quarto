@@ -22,7 +22,7 @@ class BasePlayer(quarto.Player):
         if piece:
             quarto.select(piece)
         quarto.place(position[0], position[1])
-        return quarto.check_winner != -1
+        return quarto.check_winner() != -1
     
     def _update_pieces(self):
         board = self._get_board()

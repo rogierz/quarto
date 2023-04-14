@@ -128,5 +128,16 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# idea files/directories
+/.idea/.gitignore
+/.idea/git_toolbox_prj.xml
+/.idea/vcs.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/other.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/project_quarto.iml
+
 # IDE
 .vscode/

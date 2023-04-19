@@ -1,12 +1,19 @@
-import math, copy, random, sys, time
-from quarto.quarto import Quarto
+import copy
+import math
+import random
 import numpy as np
+from quarto.quarto import Quarto
+
+
+def calculate_uct(child_visits, wins, parent_visits):
+    if parent_visits == 0 or child_visits == 0:
+        return float('inf')
+    return (wins / child_visits) + (math.sqrt((2 * math.log(parent_visits)) / child_visits))
 
 
 class Node:
-    def __init__(self, parent=None, piece=None, game: Quarto = None):
-        self.parent = parent
-        self.piece = piece  # piece given by parent (add to board when spawning children)
+    def __init__(self, parent=None, game: Quarto = None, piece=None):
+        self.parent = parent  # piece given by parent (add to board when spawning children)
         self.stats = [0, 0]  # wins, visits
         self.actions = []
         self.children = []
@@ -14,27 +21,21 @@ class Node:
         self.game = game
         self.available_position = [(i, j) for i in range(4) for j in range(4)]
         self.available_pieces = [i for i in range(16)]
+        self.piece = piece
 
-        if parent is not None:
-            self.is_root = False
-            self.parentpiece = parent.piece  # piece given to parent, already added to board
-        else:
-            self.is_root = True
-            self.parentpiece = None
+        self.is_root = parent is None
 
         self._update_pieces()
         self._update_positions()
 
-        # propagate actions
         if self.game is not None:
             pieces = self.available_pieces
-            #pieces.remove(self.piece)
             for p in pieces:
                 for space in self.available_position:
                     self.actions.append([p, space])
 
     def __repr__(self):
-        return "(" + str(self.game.get_board_status()) + ", " + str(self.piece) + ")"
+        return "(" + str(self.game.get_board_status()) + ", " + str(self.game.get_selected_piece()) + ")"
 
     def _update_pieces(self):
         board = self.game.get_board_status()
@@ -44,8 +45,6 @@ class Node:
             if i in self.available_pieces:
                 self.available_pieces.remove(i)
 
-        #self.available_pieces.remove(self.piece)
-
     def _update_positions(self):
         board = self.game.get_board_status()
         pieces_index = np.where(board != -1)
@@ -54,36 +53,35 @@ class Node:
             if tuple_index in self.available_position:
                 self.available_position.remove(tuple_index)
 
-    def rollout(self):  # places remaining pieces randomly until board is filled
-        player = 0  # even = self; odd = other
-        rolloutgame = copy.deepcopy(self.game)
+    def rollout(self):
+        player = 0
+        rollout_game = copy.deepcopy(self.game)
         spaces = copy.deepcopy(self.available_position)
         pieces = copy.deepcopy(self.available_pieces)
         while len(spaces) > 0 and len(pieces) > 0:
-            nextspaceint = random.randint(0, len(spaces) - 1)
-            nextpieceint = random.randint(0, len(pieces) - 1)
-            nextspace = spaces[nextspaceint]
-            nextpiece = pieces[nextpieceint]
-            rolloutgame.select(nextpiece)
-            rolloutgame.place(nextspace[0], nextspace[1])
-            # x = rolloutgame.AddPieceToBoard(nextpiece, nextspace[0], nextspace[1])
+            next_space = random.choice(spaces)
+            rollout_game.place(next_space[0], next_space[1])
+            next_piece = random.choice(pieces)
+            rollout_game.select(next_piece)
 
-            end = rolloutgame.check_winner() != -1
+            winner = rollout_game.check_winner()
+
+            end = winner >= 0 or rollout_game.check_finished()
             if end:
-                if player % 2 == 0 and end != "draw":
+                if player % 2 == 0 and winner != -1:
                     return True
-                else:  # lose or draw
+                else:
                     return False
             player = player + 1
-            del spaces[nextspaceint]
-            del pieces[nextpieceint]
-        return False  # ???
+            spaces.remove(next_space)
+            pieces.remove(next_piece)
+        return False
 
     def backpropagate(self, result):
         if result:
             self.stats[0] += 1
         self.stats[1] += 1
-        if (self.is_root):
+        if self.is_root:
             return
         self.parent.backpropagate(result)
 
@@ -98,48 +96,36 @@ class Node:
         return False
 
     def expand(self):
-        if not self.is_fully_expanded():
-            nextaction = random.randint(0, len(self.actions) - 1)
-            nextpiece = self.actions[nextaction][0]
-            nextspace = self.actions[nextaction][1]
+            next_action = random.choice(self.actions)
+            next_piece = next_action[0]
+            next_space = next_action[1]
 
-            # copy current game
             nextgame = copy.deepcopy(self.game)
+            nextgame.place(next_space[0], next_space[1])
+            if self.piece:
+                nextgame.select(self.piece)
 
-            # add given piece to copy in random space
-            #nextgame.AddPieceToBoard(self.piece, nextspace[0], nextspace[1])  # self.piece = given piece
-            nextgame.select(self.piece)
-            nextgame.place(nextspace[0], nextspace[1])
-
-            # make child with modified game copy and random piece
-            n = Node(parent=self, piece=nextpiece, game=nextgame)
-            self.children.append(n)
-
-            del self.actions[nextaction]
-            return True
-        else:
-            return False
+            child_node = Node(parent=self, game=nextgame, piece=next_piece)
+            self.children.append(child_node)
+            self.actions.remove(next_action)
+            return child_node
 
     def best_child(self):  # chooses most visited (aka most successful) child
-        max = -1
-        best = None
-        random.shuffle(self.children)
-        for c in self.children:
-            if max < c.stats[1]:
-                max = c.stats[1]
-                best = c
-        return best
-
-    def calculate_uct(times, wins, parenttimes):
-        if parenttimes == 0 or times == 0:
-            return float('inf')
-        return (wins / times) + (math.sqrt((2 * math.log(parenttimes)) / (times)))
+        best_child = None
+        if self.children:
+            random.shuffle(self.children)
+            best_child = max(self.children, key=lambda child: child.stats[1])
+        return best_child
 
     def best_uct(self):  # chooses child with highest UCT score
-        times = self.stats[1]
-        max = self.children[0]
-        for c in self.children:
-            c.score = Node.calculate_uct(c.stats[1], c.stats[0], times)
-            if c.score > max.score:
-                max = c
-        return max
+        parent_visits = self.stats[1]
+        best_utc_child = self
+
+        if self.children:
+            best_utc_child = self.children[0]
+            for child in self.children:
+                child.score = calculate_uct(child.stats[1], child.stats[0], parent_visits)
+                if child.score > best_utc_child.score:
+                    best_utc_child = child
+
+        return best_utc_child

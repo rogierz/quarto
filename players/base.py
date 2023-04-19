@@ -13,7 +13,7 @@ class BasePlayer(quarto.Player):
         return type(self).__name__
     
     def _get_board(self):
-        game = self.get_game()
+        game = deepcopy(self.get_game())
         board = game.get_board_status()
         return board
     

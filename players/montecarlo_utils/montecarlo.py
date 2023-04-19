@@ -29,6 +29,7 @@ class MonteCarlo:
             self.current_expanded_nodes += 1
             self.elapsed_time = time.time() - start_time
 
+        # TODO: should be implemented in the extended game class
         best_child = self.root_node.best_child()
         index_selected_piece = best_child.game.get_selected_piece()
         board_status = best_child.game.get_board_status()

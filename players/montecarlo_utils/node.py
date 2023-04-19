@@ -13,7 +13,7 @@ def calculate_uct(child_visits, wins, parent_visits):
 
 class Node:
     def __init__(self, parent=None, game: Quarto = None, piece=None):
-        self.parent = parent  # piece given by parent (add to board when spawning children)
+        self.parent = parent  
         self.stats = [0, 0]  # wins, visits
         self.actions = []
         self.children = []
@@ -77,13 +77,13 @@ class Node:
             pieces.remove(next_piece)
         return False
 
-    def backpropagate(self, result):
-        if result:
+    def backpropagate(self, simulated_result):
+        if simulated_result:
             self.stats[0] += 1
         self.stats[1] += 1
         if self.is_root:
             return
-        self.parent.backpropagate(result)
+        self.parent.backpropagate(simulated_result)
 
     def is_terminal_node(self):
         if len(self.children) == 0 and len(self.actions) == 0:
@@ -96,36 +96,33 @@ class Node:
         return False
 
     def expand(self):
-            next_action = random.choice(self.actions)
-            next_piece = next_action[0]
-            next_space = next_action[1]
+        next_action = random.choice(self.actions)
+        next_piece = next_action[0]
+        next_space = next_action[1]
 
-            nextgame = copy.deepcopy(self.game)
-            nextgame.place(next_space[0], next_space[1])
-            if self.piece:
-                nextgame.select(self.piece)
+        next_game = copy.deepcopy(self.game)
+        next_game.place(next_space[0], next_space[1])
+        if self.piece:
+            next_game.select(self.piece)
 
-            child_node = Node(parent=self, game=nextgame, piece=next_piece)
-            self.children.append(child_node)
-            self.actions.remove(next_action)
-            return child_node
+        child_node = Node(parent=self, game=next_game, piece=next_piece)
+        self.children.append(child_node)
+        self.actions.remove(next_action)
+        return child_node
 
-    def best_child(self):  # chooses most visited (aka most successful) child
+    def best_child(self):
         best_child = None
         if self.children:
             random.shuffle(self.children)
             best_child = max(self.children, key=lambda child: child.stats[1])
         return best_child
 
-    def best_uct(self):  # chooses child with highest UCT score
+    def best_uct(self):
         parent_visits = self.stats[1]
-        best_utc_child = self
-
-        if self.children:
-            best_utc_child = self.children[0]
-            for child in self.children:
-                child.score = calculate_uct(child.stats[1], child.stats[0], parent_visits)
-                if child.score > best_utc_child.score:
-                    best_utc_child = child
+        best_utc_child = self.children[0]
+        for child in self.children:
+            child.score = calculate_uct(child.stats[1], child.stats[0], parent_visits)
+            if child.score > best_utc_child.score:
+                best_utc_child = child
 
         return best_utc_child

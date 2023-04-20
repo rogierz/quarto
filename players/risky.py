@@ -1,6 +1,6 @@
 """https://scholarworks.umt.edu/cgi/viewcontent.cgi?article=1334&context=tme"""
 
-from quarto import quarto
+from quinto import quinto
 import random
 import numpy as np
 from copy import deepcopy
@@ -8,7 +8,7 @@ from functools import reduce
 from .base import BasePlayer
 class RiskyPlayer(BasePlayer):
 
-    def __init__(self, quarto: quarto.Quarto) -> None:
+    def __init__(self, quarto: quinto.Quarto) -> None:
         super().__init__(quarto)
         self.available_position = [(i, j) for i in range(4) for j in range(4)]
         self.available_pieces = [i for i in range(16)]

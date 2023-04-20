@@ -1,26 +1,31 @@
+import numpy as np
 from tqdm import trange
-from quarto import quarto
+from quinto import quinto
 from utils import parser, logger
 from players import *
 from contextlib import redirect_stdout
 
 def benchmark(iterations=1000, actors=[RandomPlayer, MinmaxPlayer]):
-    wins = [0, 0]
+    wins = np.zeros(2)
+    stats = np.zeros(2)
     with redirect_stdout(None):
-        for i in trange(iterations):
-            game = quarto.Quarto()
-            players = list(map(lambda p: p(game), actors))
-            game.set_players(players)
-            winner = game.run()
-            wins[winner] +=1
+        with trange(iterations) as t:
+            for i in t:
+                t.set_postfix({"P0": f"{stats[0]:.2f}%", "P1": f"{stats[1]:.2f}%"})
+                game = quinto.Quarto()
+                players = list(map(lambda p: p(game), actors))
+                game.set_players(players)
+                winner = game.run()
+                wins[winner] +=1
+                stats = wins/(i+1)*100
 
-    stats = list(map(lambda x: x/iterations*100, wins))
+    
     logger.info(f"Player 0 [{actors[0].__name__}] wins: {stats[0]:.2f}%")
     logger.info(f"Player 1 [{actors[1].__name__}] wins: {stats[1]:.2f}%")
 
     
 def main(p0, p1):
-    game = quarto.Quarto()
+    game = quinto.Quarto()
     players = (p0(game), p1(game))
     game.set_players(players)
     winner = game.run()

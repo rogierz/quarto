@@ -5,12 +5,12 @@ import random
 import numpy as np
 from functools import reduce
 from copy import deepcopy
-from quarto import quarto
+from quinto import quinto
 from .base import BasePlayer
 
 class NaivePlayer(BasePlayer):
 
-    def __init__(self, quarto: quarto.Quarto) -> None:
+    def __init__(self, quarto: quinto.Quarto) -> None:
         super().__init__(quarto)
         self.available_position = [(i, j) for i in range(4) for j in range(4)]
         self.available_pieces = [i for i in range(16)]

@@ -1,4 +1,5 @@
 import numpy as np
+from quinto import quinto
 from quarto import quarto
 from copy import deepcopy
 from functools import reduce
@@ -6,11 +7,16 @@ from functools import reduce
 class BasePlayer(quarto.Player):
     """Base class for creating an agent"""
 
-    def __init__(self, quarto: quarto.Quarto):
+    def __init__(self, quarto: quinto.Quarto):
         super().__init__(quarto)
+        self._game = quarto
 
     def __str__(self):
         return type(self).__name__
+    
+    def get_game(self):
+        game = super().get_game()
+        return deepcopy(game)
     
     def _get_board(self):
         game = self.get_game()
@@ -18,27 +24,11 @@ class BasePlayer(quarto.Player):
         return board
     
     def _simulate_winning_move(self, position, piece=None):
-        quarto = deepcopy(self.get_game())
+        quarto = self.get_game()
         if piece:
             quarto.select(piece)
         quarto.place(position[0], position[1])
         return quarto.check_winner() != -1
-    
-    def _update_pieces(self):
-        board = self._get_board()
-        pieces_index = np.where(board != -1)
-        placed_pieces_on_board = board[pieces_index]
-        for i in placed_pieces_on_board:
-            if i in self.available_pieces:
-                self.available_pieces.remove(i)
-
-    def _update_positions(self):
-        board = self._get_board()
-        pieces_index = np.where(board != -1)
-        for i in range(len(pieces_index[0])):
-            tuple_index = (pieces_index[1][i], pieces_index[0][i])
-            if tuple_index in self.available_position:
-                self.available_position.remove(tuple_index)
 
     def _check_winning_position(self, positions, partial_board):
         if positions.shape[0] == 1:

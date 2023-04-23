@@ -17,3 +17,19 @@ class Quarto(quarto.Quarto):
         if placed:
             self.available_position.remove((x, y))
         return placed
+
+    @property
+    def available_actions(self):
+        available_actions = []
+        for piece in self.available_pieces:
+            for position in self.available_position:
+                available_actions.append([piece, position])
+
+        if len(self.available_pieces) == 0:
+            available_actions.append([None, self.available_position[0]])
+            return available_actions
+        return available_actions
+
+    def reset_all(self):
+        self.reset()
+        self.__init__()

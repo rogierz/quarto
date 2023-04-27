@@ -4,25 +4,27 @@ from quarto import quarto
 from copy import deepcopy
 from functools import reduce
 
+
 class BasePlayer(quarto.Player):
     """Base class for creating an agent"""
 
     def __init__(self, quarto: quinto.Quarto):
         super().__init__(quarto)
+        self.moving_index = None
         self._game = quarto
 
     def __str__(self):
         return type(self).__name__
-    
+
     def get_game(self):
         game = super().get_game()
         return deepcopy(game)
-    
+
     def _get_board(self):
         game = self.get_game()
         board = game.get_board_status()
         return board
-    
+
     def _simulate_winning_move(self, position, piece=None):
         quarto = self.get_game()
         if piece:
@@ -68,3 +70,6 @@ class BasePlayer(quarto.Player):
             winning_position.append((3 - diag2_pos[0], diag2_pos[0]))
 
         return winning_position
+
+    def set_moving_index(self, index):
+        self.moving_index = index

@@ -37,5 +37,5 @@ class Quarto(quarto.Quarto):
 
     def set_players(self, players: tuple):
         super().set_players(players)
-        players[0].set_moving_index(0)
-        players[1].set_moving_index(1)
+        players[0].set_moving_index(index=0)
+        players[1].set_moving_index(index=1)

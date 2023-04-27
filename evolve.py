@@ -3,27 +3,29 @@ import pickle
 import random
 from players import EvolutionaryPlayer
 from players.evolutionary import PlayerParams, FILE_PATH
-from tqdm import trange
-
+from tqdm import trange, tqdm
+from contextlib import redirect_stdout
 POPULATION_SIZE = 100
 OFFSPRING_SIZE = 500
-GENERATIONS = 100
+GENERATIONS = 1
 MUTATION_RATE = 0.1
 
 def tournament(population, tournament_size):
     return max(random.choices(population, k=tournament_size), key=lambda i: i.fitness)
 
 def evolve():
-    population = [PlayerParams(0.5, 0.5, 0.5) for i in range(POPULATION_SIZE)]
-    for _ in trange(GENERATIONS):
+    population = [PlayerParams([0.5, 0.5, 0.5]) for i in range(POPULATION_SIZE)]
+    for _ in trange((GENERATIONS), desc="Iteration", position=0):
         offspring = []
-        for _ in trange(OFFSPRING_SIZE):
-            p1 = ~tournament(population)
-            p2 = ~tournament(population)
+        for ___ in trange(OFFSPRING_SIZE, desc="Offspring", position=1, leave=False):
+            with redirect_stdout(None):
+                p1 = ~tournament(population, 2)
+                p2 = ~tournament(population, 2)
             o = p1 ^ p2
             offspring.append(o)
         population += offspring
-        population = sorted(population, key=lambda i: i.fitness, reverse=True)[:POPULATION_SIZE]
+        with redirect_stdout(None):
+            population = sorted(population, key=lambda i: i.fitness, reverse=True)[:POPULATION_SIZE]
     return population[0]
 
 if __name__ == "__main__":

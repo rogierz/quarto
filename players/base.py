@@ -43,7 +43,7 @@ class BasePlayer(quarto.Player):
         # 1 check if it's the last position where to place a piece
         winning_position = []
 
-        if len(self.available_pieces) > 12:
+        if len(self._game.available_pieces) > 12:
             return winning_position
 
         board = self._get_board()

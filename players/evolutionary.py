@@ -10,8 +10,7 @@ from copy import deepcopy
 MU = 0
 SIGMA = 0.1
 MUTATION_RATE = 0.3
-
-FILE_NAME= "evolved.pkl"
+FILE_NAME= "evolved_agent.pkl"
 FILE_PATH = os.path.join("agents", FILE_NAME)
 
 class PlayerParams(list):
@@ -71,7 +70,7 @@ class EvolutionaryPlayer(BasePlayer):
     def __init__(self, quarto: quinto.Quarto, params=None) -> None:
         super().__init__(quarto)
         if params is None:
-            with open(FILE_PATH, "r") as fs:
+            with open(FILE_PATH, "rb") as fs:
                 self._params = pickle.load(fs)
         else:
             self._params = params

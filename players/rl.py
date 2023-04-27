@@ -12,7 +12,7 @@ def default_init():
 
 class RLPlayer(BasePlayer):
 
-    def __init__(self, quarto: quinto.Quarto, moving_first=False, train=False, alpha=0.15, random_factor=0.2) -> None:
+    def __init__(self, quarto: quinto.Quarto, train=False, alpha=0.15, random_factor=0.2) -> None:
         super().__init__(quarto)
         self.train = train
         self.state_history = []  # state, reward
@@ -24,9 +24,7 @@ class RLPlayer(BasePlayer):
             self.load_model()
 
         self.next_piece = None
-        self.moving_first = 0 if moving_first else 1
         self.episode_reward = 0
-        self._game._current_player
 
     def update_episode_reward(self, new_reward):
         self.episode_reward += new_reward
@@ -115,7 +113,7 @@ class RLPlayer(BasePlayer):
         sim_quarto = self.get_game()
         sim_quarto.place(action[1][0], action[1][1])
         if sim_quarto.check_winner() >= 0:
-            reward = reward * (-2) if self._game.get_current_player() == self.moving_first else reward * 2
+            reward = reward * (-10) if self._game.get_current_player() == self.moving_index else reward * 10
         elif sim_quarto.check_finished():
             reward = reward * 0
         prev_state = (str(self._game.get_board_status()), self._game.get_selected_piece()), action
@@ -126,9 +124,9 @@ class RLPlayer(BasePlayer):
         self.next_piece = None
 
     def save_model(self):
-        with open('model.pickle', 'wb') as f:
+        with open('./agents/rl_agent.pickle', 'wb') as f:
             pickle.dump(self.Q, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     def load_model(self):
-        with open('model.pickle', 'rb') as f:
+        with open('./agents/rl_agent.pickle', 'rb') as f:
             self.Q = pickle.load(f)

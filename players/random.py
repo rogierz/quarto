@@ -1,7 +1,6 @@
 import random
 from quinto import quinto
 from .base import BasePlayer
-import numpy as np
 
 
 class RandomPlayer(BasePlayer):

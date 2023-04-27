@@ -39,16 +39,8 @@ class RLPlayer(BasePlayer):
             return action[0]
         if self.next_piece is None and not self.train:
             # read from the Q table
-            board_state = (str(self._game.get_board_status()), self._game.get_selected_piece())
-            max = 0
-            next_action = None
-            for action in self._game.available_actions:
-                action_try = (action[0], action[1])
-                local_max = self.Q[board_state, action_try]
-                if local_max > max:
-                    max = local_max
-                    next_action = action_try
-            return next_action[0]
+            best_action = self.best_action()
+            return best_action[0]
 
         return self.next_piece
 
@@ -60,18 +52,10 @@ class RLPlayer(BasePlayer):
             self.update_episode_reward(reward)
             self.next_piece = action[0]
             return action[1][0], action[1][1]
-        board_state = (str(self._game.get_board_status()), self._game.get_selected_piece())
-        max = 0
-        next_action = None
-        for action in self._game.available_actions:
-            action_try = (action[0], action[1])
-            local_max = self.Q[board_state, action_try]
-            if local_max > max:
-                max = local_max
-                next_action = action_try
 
-        self.next_piece = next_action[0]
-        return next_action[1][0], next_action[1][1]
+        best_action = self.best_action()
+        self.next_piece = best_action[0]
+        return best_action[1][0], best_action[1][1]
 
     def choose_action(self):
         maxG = -10e15
@@ -93,6 +77,19 @@ class RLPlayer(BasePlayer):
                     maxG = self.Q[board_state, next_action]
 
         return next_move
+
+    def best_action(self):
+        board_state = (str(self._game.get_board_status()), self._game.get_selected_piece())
+        max = 0
+        next_action = None
+        for action in self._game.available_actions:
+            action_try = (action[0], action[1])
+            local_max = self.Q[board_state, action_try]
+            if local_max > max:
+                max = local_max
+                next_action = action_try
+
+        return next_action
 
     def update_state_history(self, state, reward):
         self.state_history.append((state, reward))

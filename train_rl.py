@@ -3,7 +3,6 @@ from players import *
 import matplotlib.pyplot as plt
 from contextlib import redirect_stdout
 from tqdm import trange
-from utils import parser, logger
 import argparse
 
 if __name__ == "__main__":
@@ -20,7 +19,7 @@ if __name__ == "__main__":
     index_rl_player = 0 if isinstance(players[0], RLPlayer) else 1
     game.set_players(players)
     rewards_per_episode = []
-    iterations = 50
+    iterations = 2000
     with redirect_stdout(None):
         with trange(iterations) as t:
             for i in t:

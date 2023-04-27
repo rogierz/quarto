@@ -52,7 +52,7 @@ class PlayerParams(list):
         return new_born
 
     @property
-    def fitness(self, games=4):
+    def fitness(self, games=10):
         if self._fitness is None:
             wins = np.zeros(3)
             for _ in range(games):

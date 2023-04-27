@@ -6,18 +6,18 @@ from players.evolutionary import PlayerParams, FILE_PATH
 from tqdm import trange, tqdm
 from contextlib import redirect_stdout
 POPULATION_SIZE = 100
-OFFSPRING_SIZE = 500
-GENERATIONS = 5
+OFFSPRING_SIZE = 100
+GENERATIONS = 50
 MUTATION_RATE = 0.1
 
 def tournament(population, tournament_size):
     return max(random.choices(population, k=tournament_size), key=lambda i: i.fitness)
 
 def evolve():
-    population = [PlayerParams([0.5, 0.5, 0.5]) for i in range(POPULATION_SIZE)]
+    population = [PlayerParams([0.5, 0.5, 0.5]) for _ in range(POPULATION_SIZE)]
     for _ in trange((GENERATIONS), desc="Iteration", position=0):
         offspring = []
-        for ___ in trange(OFFSPRING_SIZE, desc="Offspring", position=1, leave=False):
+        for _ in trange(OFFSPRING_SIZE, desc="Offspring", position=1, leave=False):
             with redirect_stdout(None):
                 p1 = ~tournament(population, 2)
                 p2 = ~tournament(population, 2)

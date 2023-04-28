@@ -1,3 +1,5 @@
+# Run this if you want to obtain something similar to the list: find . -not -path '*/.*'
+
 files = ["evolve.py",
 "main.py",
 "players/base.py",
@@ -24,4 +26,4 @@ files = ["evolve.py",
 
 for f in files:
     escaped = f.replace("_", "\\_")
-    print(f"\\begin{{listing}}[!h]\n\inputminted{{python}}{{{f}}}\n\caption{{src\{escaped}}}\n\label{{src:{f}}}\n\end{{listing}}\n")
+    print(f"\\begin{{listing}}[!h]\n\inputminted{{python}}{{src/{f}}}\n\caption{{{escaped}}}\n\label{{src:{f}}}\n\end{{listing}}\n")

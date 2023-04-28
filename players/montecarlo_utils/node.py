@@ -86,7 +86,7 @@ class Node:
         self.parent.backpropagate(simulated_result)
 
     def is_terminal_node(self):
-        if len(self.children) == 0 and len(self.actions) == 0:
+        if len(self.actions) == 0:
             return True
         return False
 

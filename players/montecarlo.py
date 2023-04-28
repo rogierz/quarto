@@ -1,10 +1,11 @@
 from quarto import quarto
 from copy import deepcopy
 from players.montecarlo_utils.montecarlo import MonteCarlo
+from .base import BasePlayer
 import random
 
 
-class MonteCarloPlayer(quarto.Player):
+class MonteCarloPlayer(BasePlayer):
 
     def __init__(self, quarto: quarto.Quarto):
         super().__init__(quarto)

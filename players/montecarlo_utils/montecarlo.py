@@ -1,3 +1,4 @@
+import copy
 import random
 import time
 import numpy as np
@@ -10,7 +11,7 @@ class MonteCarlo:
 
     def __init__(self, game: Quarto, budget_time: float = 10000, max_nodes: int = 100):
 
-        self.game = game
+        self.game = copy.deepcopy(game)
         self.root_node = Node(game=game)
         self.time_budget = budget_time
         self.max_expanded_nodes = max_nodes

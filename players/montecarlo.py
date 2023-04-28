@@ -18,8 +18,7 @@ class MonteCarloPlayer(BasePlayer):
         return self.next_piece if self.next_piece else random.choice(self._game.available_pieces)
 
     def place_piece(self) -> tuple[int, int]:
-        game = self.get_game()
-        montecarlo = MonteCarlo(game=game)
+        montecarlo = MonteCarlo(game=self._game)
         next_piece, space = montecarlo.search()
         self.next_piece = deepcopy(next_piece)
 

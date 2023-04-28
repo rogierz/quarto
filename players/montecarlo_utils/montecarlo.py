@@ -8,7 +8,7 @@ from .node import Node
 
 class MonteCarlo:
 
-    def __init__(self, game: Quarto, budget_time: float = 10000, max_nodes: int = 1000):
+    def __init__(self, game: Quarto, budget_time: float = 10000, max_nodes: int = 100):
 
         self.game = game
         self.root_node = Node(game=game)

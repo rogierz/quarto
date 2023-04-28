@@ -73,8 +73,6 @@ class Node:
 
         next_game = copy.deepcopy(self.game)
         next_game.place(next_space[0], next_space[1])
-        #if self.piece:
-            #next_game.select(self.piece)
 
         child_node = Node(parent=self, game=next_game, piece=next_piece)
         self.children.append(child_node)
@@ -83,7 +81,6 @@ class Node:
     def best_child(self):
         best_child = None
         if self.children:
-            random.shuffle(self.children)
             best_child = max(self.children, key=lambda child: child.stats[1])
         return best_child
 

@@ -26,4 +26,4 @@ files = ["evolve.py",
 
 for f in files:
     escaped = f.replace("_", "\\_")
-    print(f"\\begin{{listing}}[!h]\n\inputminted{{python}}{{src/{f}}}\n\caption{{{escaped}}}\n\label{{src:{f}}}\n\end{{listing}}\n")
+    print(f"\\paragraph{{{escaped}}}\n\inputminted{{python}}{{src/{f}}}\n\label{{src:{f}}}\n")

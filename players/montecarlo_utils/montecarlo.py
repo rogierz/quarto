@@ -8,7 +8,7 @@ from .node import Node
 
 class MonteCarlo:
 
-    def __init__(self, game: Quarto, budget_time: float = 10000, max_nodes: int = 2000):
+    def __init__(self, game: Quarto, budget_time: float = 10000, max_nodes: int = 1000):
 
         self.game = game
         self.root_node = Node(game=game)
@@ -47,11 +47,9 @@ class MonteCarlo:
 
     def available_resources(self):
         if self.elapsed_time > self.time_budget:
-            # logging.warning(f"montecarlo: truncated -> exceeded time resources")
             return False
 
         if self.current_expanded_nodes > self.max_expanded_nodes:
-            # logging.warning(f"montecarlo: truncated -> exceeded memory resources")
             return False
 
         return True

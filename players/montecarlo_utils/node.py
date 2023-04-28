@@ -2,7 +2,7 @@ import copy
 import math
 import random
 import numpy as np
-from quarto.quarto import Quarto
+from quinto.quinto import Quarto
 
 
 def calculate_uct(child_visits, wins, parent_visits):
@@ -13,66 +13,37 @@ def calculate_uct(child_visits, wins, parent_visits):
 
 class Node:
     def __init__(self, parent=None, game: Quarto = None, piece=None):
-        self.parent = parent  
+        self.parent = parent
         self.stats = [0, 0]  # wins, visits
-        self.actions = []
+        self.actions = game.available_actions
         self.children = []
         self.score = float('inf')
-        self.game = game
-        self.available_position = [(i, j) for i in range(4) for j in range(4)]
-        self.available_pieces = [i for i in range(16)]
+        self.game = copy.deepcopy(game)
         self.piece = piece
 
         self.is_root = parent is None
 
-        self._update_pieces()
-        self._update_positions()
-
-        if self.game is not None:
-            pieces = self.available_pieces
-            for p in pieces:
-                for space in self.available_position:
-                    self.actions.append([p, space])
-
     def __repr__(self):
         return "(" + str(self.game.get_board_status()) + ", " + str(self.game.get_selected_piece()) + ")"
 
-    def _update_pieces(self):
-        board = self.game.get_board_status()
-        pieces_index = np.where(board != -1)
-        placed_pieces_on_board = board[pieces_index]
-        for i in placed_pieces_on_board:
-            if i in self.available_pieces:
-                self.available_pieces.remove(i)
-
-    def _update_positions(self):
-        board = self.game.get_board_status()
-        pieces_index = np.where(board != -1)
-        for i in range(len(pieces_index[0])):
-            tuple_index = (pieces_index[1][i], pieces_index[0][i])
-            if tuple_index in self.available_position:
-                self.available_position.remove(tuple_index)
-
     def rollout(self):
-        player = 0
         rollout_game = copy.deepcopy(self.game)
-        spaces = copy.deepcopy(self.available_position)
-        pieces = copy.deepcopy(self.available_pieces)
+        spaces = copy.deepcopy(self.game.available_position)
+        pieces = copy.deepcopy(self.game.available_pieces)
+        next_piece = self.piece
         while len(spaces) > 0 and len(pieces) > 0:
+            rollout_game.select(next_piece)
+            rollout_game._current_player = (rollout_game._current_player + 1) % rollout_game.MAX_PLAYERS
             next_space = random.choice(spaces)
             rollout_game.place(next_space[0], next_space[1])
-            next_piece = random.choice(pieces)
-            rollout_game.select(next_piece)
-
             winner = rollout_game.check_winner()
-
             end = winner >= 0 or rollout_game.check_finished()
             if end:
-                if player % 2 == 0 and winner != -1:
+                if winner == self.game.get_current_player():
                     return True
                 else:
                     return False
-            player = player + 1
+            next_piece = random.choice(pieces)
             spaces.remove(next_space)
             pieces.remove(next_piece)
         return False
@@ -86,7 +57,7 @@ class Node:
         self.parent.backpropagate(simulated_result)
 
     def is_terminal_node(self):
-        if len(self.actions) == 0:
+        if self.game.check_finished() or self.game.check_winner() >= 0:
             return True
         return False
 
@@ -102,12 +73,11 @@ class Node:
 
         next_game = copy.deepcopy(self.game)
         next_game.place(next_space[0], next_space[1])
-        if self.piece:
-            next_game.select(self.piece)
+        #if self.piece:
+            #next_game.select(self.piece)
 
         child_node = Node(parent=self, game=next_game, piece=next_piece)
         self.children.append(child_node)
-        self.actions.remove(next_action)
         return child_node
 
     def best_child(self):

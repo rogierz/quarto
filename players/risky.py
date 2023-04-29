@@ -17,7 +17,8 @@ class RiskyPlayer(BasePlayer):
         # check if there is a winning position for the opponent
         winning_position_opponent = self._list_winning_positions()
         if len(winning_position_opponent) > 0:
-            # if there is a winning position for the opponent then delete the pieces that makes them winning
+            # if there is a winning position for the opponent then delete the
+            # pieces that makes them winning
             available_pieces = deepcopy(self._game.available_pieces)
             for position in winning_position_opponent:
                 for piece in available_pieces:
@@ -38,7 +39,9 @@ class RiskyPlayer(BasePlayer):
             binary_representation[positions[0]] = piece
             binary_representation = binary_representation[binary_representation != -1]
             common_pieces_1 = reduce(lambda a, b: a & b, binary_representation)
-            common_pieces_2 = reduce(lambda a, b: a & (not b), binary_representation, 15)
+            common_pieces_2 = reduce(
+                lambda a, b: a & (
+                    not b), binary_representation, 15)
             return common_pieces_1 or common_pieces_2
         return False
 
@@ -75,9 +78,11 @@ class RiskyPlayer(BasePlayer):
         diag2_pos = np.where(diag_2 == -1)[0]
         if self.__check_line_position(diag2_pos, diag_2):
             if len(diag2_pos) == 3:
-                line_position_3_vacancy.append((3 - diag2_pos[0], diag2_pos[0]))
+                line_position_3_vacancy.append(
+                    (3 - diag2_pos[0], diag2_pos[0]))
             else:
-                line_position_2_vacancy.append((3 - diag2_pos[0], diag2_pos[0]))
+                line_position_2_vacancy.append(
+                    (3 - diag2_pos[0], diag2_pos[0]))
 
         if len(line_position_2_vacancy) > 0:
             return line_position_2_vacancy

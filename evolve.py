@@ -10,14 +10,25 @@ OFFSPRING_SIZE = 100
 GENERATIONS = 50
 MUTATION_RATE = 0.1
 
+
 def tournament(population, tournament_size):
-    return max(random.choices(population, k=tournament_size), key=lambda i: i.fitness)
+    return max(
+        random.choices(
+            population,
+            k=tournament_size),
+        key=lambda i: i.fitness)
+
 
 def evolve():
-    population = [PlayerParams([0.5, 0.5, 0.5]) for _ in range(POPULATION_SIZE)]
+    population = [PlayerParams([0.5, 0.5, 0.5])
+                  for _ in range(POPULATION_SIZE)]
     for _ in trange((GENERATIONS), desc="Iteration", position=0):
         offspring = []
-        for _ in trange(OFFSPRING_SIZE, desc="Offspring", position=1, leave=False):
+        for _ in trange(
+                OFFSPRING_SIZE,
+                desc="Offspring",
+                position=1,
+                leave=False):
             with redirect_stdout(None):
                 p1 = ~tournament(population, 2)
                 p2 = ~tournament(population, 2)
@@ -25,8 +36,13 @@ def evolve():
             offspring.append(o)
         population += offspring
         with redirect_stdout(None):
-            population = sorted(population, key=lambda i: i.fitness, reverse=True)[:POPULATION_SIZE]
+            population = sorted(
+                population,
+                key=lambda i: i.fitness,
+                reverse=True)[
+                :POPULATION_SIZE]
     return population[0]
+
 
 if __name__ == "__main__":
     if os.path.isfile(FILE_PATH):

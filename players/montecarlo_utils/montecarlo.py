@@ -9,7 +9,11 @@ from .node import Node
 
 class MonteCarlo:
 
-    def __init__(self, game: Quarto, budget_time: float = 10000, max_nodes: int = 100):
+    def __init__(
+            self,
+            game: Quarto,
+            budget_time: float = 10000,
+            max_nodes: int = 100):
 
         self.game = copy.deepcopy(game)
         self.root_node = Node(game=game)

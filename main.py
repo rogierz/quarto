@@ -12,7 +12,8 @@ def benchmark(iterations=1000, actors=[RandomPlayer, MinmaxPlayer]):
     with redirect_stdout(None):
         with trange(iterations) as t:
             for i in t:
-                t.set_postfix({"P0": f"{stats[0]:.2f}%", "P1": f"{stats[1]:.2f}%"})
+                t.set_postfix(
+                    {"P0": f"{stats[0]:.2f}%", "P1": f"{stats[1]:.2f}%"})
                 game = quinto.Quarto()
                 players = list(map(lambda p: p(game), actors))
                 game.set_players(players)

@@ -37,7 +37,9 @@ class BasePlayer(quarto.Player):
             binary_representation = partial_board
             binary_representation = binary_representation[binary_representation != -1]
             common_pieces_1 = reduce(lambda a, b: a & b, binary_representation)
-            common_pieces_2 = reduce(lambda a, b: a & (not b), binary_representation, 15)
+            common_pieces_2 = reduce(
+                lambda a, b: a & (
+                    not b), binary_representation, 15)
             return common_pieces_1 or common_pieces_2
         return False
 

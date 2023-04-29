@@ -25,7 +25,12 @@ class Player(object):
 
 class Piece(object):
 
-    def __init__(self, high: bool, coloured: bool, solid: bool, square: bool) -> None:
+    def __init__(
+            self,
+            high: bool,
+            coloured: bool,
+            solid: bool,
+            square: bool) -> None:
         self.HIGH = high
         self.COLOURED = coloured
         self.SOLID = solid

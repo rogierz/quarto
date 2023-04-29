@@ -26,7 +26,9 @@ class Quarto(quarto.Quarto):
             for position in self.available_position:
                 available_actions.append([piece, position])
 
-        if len(self.available_pieces) == 0 and len(self.available_position) > 0:
+        if len(
+                self.available_pieces) == 0 and len(
+                self.available_position) > 0:
             available_actions.append([None, self.available_position[0]])
             return available_actions
         return available_actions

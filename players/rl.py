@@ -12,7 +12,12 @@ def default_init():
 
 class RLPlayer(BasePlayer):
 
-    def __init__(self, quarto: quinto.Quarto, train=False, alpha=0.15, random_factor=0.2) -> None:
+    def __init__(
+            self,
+            quarto: quinto.Quarto,
+            train=False,
+            alpha=0.15,
+            random_factor=0.2) -> None:
         super().__init__(quarto)
         self.train = train
         self.state_history = []  # state, reward
@@ -64,12 +69,15 @@ class RLPlayer(BasePlayer):
         allowed_action = self._game.available_actions
         if randomN < self.random_factor:
             # if random number below random factor, choose random action
-            next_move = random.choice(allowed_action)  # chosen piece, position to place current piece
+            # chosen piece, position to place current piece
+            next_move = random.choice(allowed_action)
             next_move = next_move[0], next_move[1]
         else:
-            # if exploiting, gather all possible actions and choose one with the highest G (reward)
+            # if exploiting, gather all possible actions and choose one with
+            # the highest G (reward)
             for action in allowed_action:
-                board_state = (str(self._game.get_board_status()), self._game.get_selected_piece())
+                board_state = (str(self._game.get_board_status()),
+                               self._game.get_selected_piece())
                 next_action = (action[0], action[1])
 
                 if self.Q[board_state, next_action] >= maxG:
@@ -79,7 +87,8 @@ class RLPlayer(BasePlayer):
         return next_move
 
     def best_action(self):
-        board_state = (str(self._game.get_board_status()), self._game.get_selected_piece())
+        board_state = (str(self._game.get_board_status()),
+                       self._game.get_selected_piece())
         max = 0
         next_action = None
         for action in self._game.available_actions:
@@ -110,10 +119,12 @@ class RLPlayer(BasePlayer):
         sim_quarto = self.get_game()
         sim_quarto.place(action[1][0], action[1][1])
         if sim_quarto.check_winner() >= 0:
-            reward = reward * (-10) if self._game.get_current_player() == self.moving_index else reward * 10
+            reward = reward * \
+                (-10) if self._game.get_current_player() == self.moving_index else reward * 10
         elif sim_quarto.check_finished():
             reward = reward * 0
-        prev_state = (str(self._game.get_board_status()), self._game.get_selected_piece()), action
+        prev_state = (str(self._game.get_board_status()),
+                      self._game.get_selected_piece()), action
         return prev_state, reward
 
     def reset_player(self):

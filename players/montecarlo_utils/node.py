@@ -8,7 +8,8 @@ from quinto.quinto import Quarto
 def calculate_uct(child_visits, wins, parent_visits):
     if parent_visits == 0 or child_visits == 0:
         return float('inf')
-    return (wins / child_visits) + (math.sqrt((2 * math.log(parent_visits)) / child_visits))
+    return (wins / child_visits) + \
+        (math.sqrt((2 * math.log(parent_visits)) / child_visits))
 
 
 class Node:
@@ -24,7 +25,8 @@ class Node:
         self.is_root = parent is None
 
     def __repr__(self):
-        return "(" + str(self.game.get_board_status()) + ", " + str(self.game.get_selected_piece()) + ")"
+        return "(" + str(self.game.get_board_status()) + ", " + \
+            str(self.game.get_selected_piece()) + ")"
 
     def rollout(self):
         rollout_game = copy.deepcopy(self.game)
@@ -33,7 +35,8 @@ class Node:
         next_piece = self.piece
         while len(spaces) > 0 and len(pieces) > 0:
             rollout_game.select(next_piece)
-            rollout_game._current_player = (rollout_game._current_player + 1) % rollout_game.MAX_PLAYERS
+            rollout_game._current_player = (
+                rollout_game._current_player + 1) % rollout_game.MAX_PLAYERS
             next_space = random.choice(spaces)
             rollout_game.place(next_space[0], next_space[1])
             winner = rollout_game.check_winner()
@@ -88,7 +91,8 @@ class Node:
         parent_visits = self.stats[1]
         best_utc_child = self.children[0]
         for child in self.children:
-            child.score = calculate_uct(child.stats[1], child.stats[0], parent_visits)
+            child.score = calculate_uct(
+                child.stats[1], child.stats[0], parent_visits)
             if child.score > best_utc_child.score:
                 best_utc_child = child
 

@@ -15,7 +15,8 @@ class NaivePlayer(BasePlayer):
         # check if there is a winning position for the opponent
         winning_position_opponent = self._list_winning_positions()
         if len(winning_position_opponent) > 0:
-            # if there is a winning position for the opponent then delete the pieces that makes them winning
+            # if there is a winning position for the opponent then delete the
+            # pieces that makes them winning
             available_pieces = deepcopy(self._game.available_pieces)
             for position in winning_position_opponent:
                 for piece in available_pieces:

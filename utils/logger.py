@@ -1,7 +1,9 @@
 import logging
 
+
 def configureLogger(args):
-    logging.basicConfig(format="(%(msecs)d:%(filename)s:%(funcName)s:%(lineno)d) [%(levelname)s] %(message)s")
+    logging.basicConfig(
+        format="(%(msecs)d:%(filename)s:%(funcName)s:%(lineno)d) [%(levelname)s] %(message)s")
     logger = logging.getLogger()
 
     if args.verbose == 0:

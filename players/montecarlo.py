@@ -15,7 +15,8 @@ class MonteCarloPlayer(BasePlayer):
         return type(self).__name__
 
     def choose_piece(self) -> int:
-        return self.next_piece if self.next_piece else random.choice(self._game.available_pieces)
+        return self.next_piece if self.next_piece else random.choice(
+            self._game.available_pieces)
 
     def place_piece(self) -> tuple[int, int]:
         montecarlo = MonteCarlo(game=self._game)

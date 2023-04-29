@@ -10,7 +10,6 @@ import quarto
 class RandomPlayer(quarto.Player):
     """Random player"""
 
-
     def __init__(self, quarto: quarto.Quarto) -> None:
         super().__init__(quarto)
 

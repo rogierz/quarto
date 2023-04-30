@@ -48,8 +48,13 @@ if __name__ == "__main__":
                 game.set_players(players)
         players[index_rl_player].save_model()
 
-    min_reward = abs(min(rewards_per_episode)) + 10e-4
-    fixed_reward = [elm + min_reward for elm in rewards_per_episode]
+    average = []
+
+    for i in range(len(rewards_per_episode)):
+        episode_rew = rewards_per_episode[:i+1]
+        average.append(sum(episode_rew) / (i + 1))
+
     plt.figure()
-    plt.semilogy(fixed_reward)
-    plt.savefig('./images/reward_per_episode.png')
+    plt.title("Average rewards")
+    plt.plot(average)
+    plt.savefig('./images/new_reward_per_episode.png')

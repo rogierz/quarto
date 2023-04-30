@@ -7,7 +7,7 @@ import pickle
 
 
 def default_init():
-    return np.random.uniform(low=0.1, high=1)
+    return 0
 
 
 class RLPlayer(BasePlayer):
@@ -22,6 +22,7 @@ class RLPlayer(BasePlayer):
         self.train = train
         self.state_history = []  # state, reward
         self.alpha = alpha
+        self.gamma = 1
         self.random_factor = random_factor
         if self.train:
             self.Q = defaultdict(default_init)
@@ -89,7 +90,7 @@ class RLPlayer(BasePlayer):
     def best_action(self):
         board_state = (str(self._game.get_board_status()),
                        self._game.get_selected_piece())
-        max = 0
+        max = float('-inf')
         next_action = None
         for action in self._game.available_actions:
             action_try = (action[0], action[1])
@@ -104,11 +105,11 @@ class RLPlayer(BasePlayer):
         self.state_history.append((state, reward))
 
     def learn(self):
-        target = 0
-
+        max_state_history = max(self.state_history, key=lambda x: x[1])[1]
         for prev, reward in reversed(self.state_history):
-            self.Q[prev] = self.Q[prev] + self.alpha * (target - self.Q[prev])
-            target += reward
+
+            adjusted_reward = reward + self.gamma * max_state_history
+            self.Q[prev] = self.Q[prev] + self.alpha * (adjusted_reward - self.Q[prev])
 
         self.state_history = []
 
@@ -119,10 +120,9 @@ class RLPlayer(BasePlayer):
         sim_quarto = self.get_game()
         sim_quarto.place(action[1][0], action[1][1])
         if sim_quarto.check_winner() >= 0:
-            reward = reward * \
-                (-10) if self._game.get_current_player() == self.moving_index else reward * 10
+            reward = 100 if self._game.get_current_player() == self.moving_index else -100
         elif sim_quarto.check_finished():
-            reward = reward * 0
+            reward = -100
         prev_state = (str(self._game.get_board_status()),
                       self._game.get_selected_piece()), action
         return prev_state, reward

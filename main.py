@@ -36,10 +36,10 @@ def tournament(tournament_name="all"):
         for p1 in players_indexes:
             if p0 == p1:
                 continue
-        logger.info(f"{players_keys[p0]} vs {players_keys[p1]}")
-        stats = benchmark(iterations=100, actors=[
-            PLAYERS[players_keys[p0]], PLAYERS[players_keys[p1]]])
-        results[p0, p1] = stats[0]
+            logger.info(f"{players_keys[p0]} vs {players_keys[p1]}")
+            stats = benchmark(iterations=100, actors=[
+                PLAYERS[players_keys[p0]], PLAYERS[players_keys[p1]]])
+            results[p0, p1] = stats[0]
 
     results.tofile(f"{tournament_name}_tournament.npy")
 

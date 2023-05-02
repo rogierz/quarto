@@ -44,6 +44,23 @@ def tournament(tournament_name="all"):
     results.tofile(f"{tournament_name}_tournament.npy")
 
 
+def tournament_opponent_random(tournament_name="all_vs_random"):
+    players_keys = [p for p in PLAYERS.keys() if p != 'random']
+    players_indexes = list(range(len(players_keys)))
+    results = np.zeros((len(players_keys), 2))
+
+    for p0 in players_indexes:
+        logger.info(f"{players_keys[p0]} vs random")
+        stats = benchmark(iterations=100, actors=[
+            PLAYERS[players_keys[p0]], PLAYERS['random']])
+        results[p0, 0] = stats[0]
+        logger.info(f"random vs {players_keys[p0]}")
+        stats = benchmark(iterations=100, actors=[
+            PLAYERS['random'], PLAYERS[players_keys[p0]]])
+        results[p0, 1] = stats[0]
+    results.tofile(f"{tournament_name}_tournament.npy")
+
+
 def main(p0, p1):
     game = quinto.Quarto()
     players = (p0(game), p1(game))
@@ -61,5 +78,7 @@ if __name__ == '__main__':
         benchmark(actors=[args.p0, args.p1])
     elif args.tournament:
         tournament()
+    elif args.tournament_against_random:
+        tournament_opponent_random()
     else:
         main(args.p0, args.p1)

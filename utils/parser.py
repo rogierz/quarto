@@ -14,7 +14,14 @@ parser.add_argument(
     '--tournament',
     action='store_true',
     dest='tournament',
-    help='execute a tournament among all agents')
+    help='execute a tournament among all agents except random')
+
+parser.add_argument(
+    '-tr',
+    '--tournament_against_random',
+    action='store_true',
+    dest='tournament_against_random',
+    help='execute a tournament of all agents against random')
 
 parser.add_argument(
     '-p0',

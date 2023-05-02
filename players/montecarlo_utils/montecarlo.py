@@ -2,7 +2,7 @@ import copy
 import random
 import time
 import numpy as np
-import logging
+from copy import deepcopy
 from quarto.quarto import Quarto
 from .node import Node
 
@@ -68,3 +68,14 @@ class MonteCarlo:
                 current_node = self.root_node.best_uct()
 
         return current_node
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        obj = cls.__new__(cls)
+        memo[id(self)] = obj
+        for k, v in self.__dict__.items():
+            if k in ['root_node']:
+                v = None
+            setattr(obj, k, deepcopy(v, memo))
+            pass
+        return obj

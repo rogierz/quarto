@@ -8,6 +8,14 @@ parser.add_argument(
     action='store_true',
     dest='benchmark',
     help='execute 100 iterations')
+
+parser.add_argument(
+    '-t',
+    '--tournament',
+    action='store_true',
+    dest='tournament',
+    help='execute a tournament among all agents')
+
 parser.add_argument(
     '-p0',
     choices=PLAYERS.keys(),
@@ -18,6 +26,7 @@ parser.add_argument(
     choices=PLAYERS.keys(),
     help='selects player 1',
     required=True)
+
 parser.add_argument('-v', '--verbose', action='count',
                     default=0, help='increase log verbosity')
 parser.add_argument('-d',

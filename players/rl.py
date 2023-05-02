@@ -1,6 +1,7 @@
 import random
 from quinto import quinto
 from .base import BasePlayer
+from copy import deepcopy
 import numpy as np
 from collections import defaultdict
 import pickle
@@ -109,7 +110,8 @@ class RLPlayer(BasePlayer):
         for prev, reward in reversed(self.state_history):
 
             adjusted_reward = reward + self.gamma * max_state_history
-            self.Q[prev] = self.Q[prev] + self.alpha * (adjusted_reward - self.Q[prev])
+            self.Q[prev] = self.Q[prev] + self.alpha * \
+                (adjusted_reward - self.Q[prev])
 
         self.state_history = []
 
@@ -138,3 +140,14 @@ class RLPlayer(BasePlayer):
     def load_model(self):
         with open('./agents/rl_agent.pickle', 'rb') as f:
             self.Q = pickle.load(f)
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        obj = cls.__new__(cls)
+        memo[id(self)] = obj
+        for k, v in self.__dict__.items():
+            if k in ['Q']:
+                v = None
+            setattr(obj, k, deepcopy(v, memo))
+            pass
+        return obj

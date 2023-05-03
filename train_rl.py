@@ -51,7 +51,7 @@ if __name__ == "__main__":
     average = []
 
     for i in range(len(rewards_per_episode)):
-        episode_rew = rewards_per_episode[:i+1]
+        episode_rew = rewards_per_episode[:i + 1]
         average.append(sum(episode_rew) / (i + 1))
 
     plt.figure()

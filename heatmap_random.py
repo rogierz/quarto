@@ -11,7 +11,7 @@ data_norm = data / 100
 labels = [k for k in PLAYERS.keys() if k != 'random']
 
 # Create a heatmap using Matplotlib
-fig, ax = plt.subplots(figsize=(10, 9))
+fig, ax = plt.subplots(figsize=(6, 9))
 im = ax.imshow(data_norm, cmap='viridis')
 
 # Show the colorbar and set the tick labels

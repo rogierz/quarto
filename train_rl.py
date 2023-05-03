@@ -55,6 +55,6 @@ if __name__ == "__main__":
         average.append(sum(episode_rew) / (i + 1))
 
     plt.figure()
-    plt.title("Average rewards")
+    plt.title("Mean episode return")
     plt.plot(average)
     plt.savefig('./images/new_reward_per_episode.png')

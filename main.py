@@ -57,8 +57,8 @@ def tournament_opponent_random(tournament_name="all_vs_random"):
         logger.info(f"random vs {players_keys[p0]}")
         stats = benchmark(iterations=100, actors=[
             PLAYERS['random'], PLAYERS[players_keys[p0]]])
-        results[p0, 1] = stats[0]
-    results.tofile(f"{tournament_name}_tournament.npy")
+        results[p0, 1] = stats[1]
+    np.save(f"{tournament_name}_tournament.npy", results)
 
 
 def main(p0, p1):
